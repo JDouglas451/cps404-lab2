@@ -1,13 +1,12 @@
-// List voters for agenda item '1' for the given csv file
+// List voters for the requested agenda item number, requesting data via HTTP
+
+let http = require("http");
+let csv = require("csv-string");
+const { exit } = require("process");
 
 function printUsage() {
     console.log("Usage: node lab2http.js [agenda_item_number] [csv_url]");
 }
-
-let fs = require("fs");
-let http = require("http");
-let csv = require("csv-string");
-const { exit } = require("process");
 
 // Get the agenda item number to look up
 
@@ -26,7 +25,7 @@ if (process.argv.length > 2) {
 
 if (NaN === agenda_item_number || 0 > agenda_item_number) {
     printUsage();
-    console.log("Agenda item number must be an integer greater than zero");
+    console.log("Agenda item number must be an integer greater than or equal to zero");
     process.exit(1);
 }
 
@@ -59,7 +58,7 @@ http.get(
 
             for (let i = 0; i < parsed_data.length; i++) {
                 let record = parsed_data[i];
-                if (record.agenda_item_number !== "1") continue;
+                if (record.agenda_item_number != agenda_item_number) continue;
 
                 let date = new Date(record.date);
                 let name = record.voter_name;
