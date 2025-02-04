@@ -55,6 +55,7 @@ http.get(
             response_body += data;
         }).on("end", function () {
             let parsed_data = csv.parse(response_body, { output: "objects" });
+            let results = [];
 
             for (let i = 0; i < parsed_data.length; i++) {
                 let record = parsed_data[i];
@@ -64,8 +65,13 @@ http.get(
                 let name = record.voter_name;
                 let vote = record.vote;
 
-                console.log(`${date.getFullYear()}-${date.getMonth()}-${date.getDay()} - ${name} - ${vote}`);
+                results.push(`${date.getFullYear()}-${date.getMonth()}-${date.getDay()} - ${name} - ${vote}`);
             }
+
+            // sort results and print
+
+            results.sort((a, b) => a.localeCompare(b));
+            results.forEach((val) => console.log(val));
         });
     }
 ).on(
