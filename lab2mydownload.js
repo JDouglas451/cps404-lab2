@@ -13,7 +13,7 @@ function download(url) {
                 const { statusCode } = response;
                 
                 if (statusCode !== 200) {
-                    reject(`Error: response ${statusCode} from ${url}`);
+                    reject(new Error("Received response code: " + statusCode));
                 }
 
                 response.setEncoding('utf8');
@@ -30,7 +30,9 @@ function download(url) {
                     () => { resolve(data); }
                 );
             }
-        );
+        ).on("error", (err) => {
+            reject(new Error("Request error: " + err.message));
+        });
     })
 }
 
@@ -88,7 +90,7 @@ download(url).then(
     }
 ).catch(
     (err) => {
-        console.log(err);
+        console.log(err.message);
         exit(1);
     }
 );
